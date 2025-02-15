@@ -41,7 +41,7 @@ const Recents = (props) => {
           <br />
           Add a new income/expense
           <br />
-          in new-entry page 😁
+          in new-entry page 
         </p>
       </div>
     );
@@ -136,7 +136,7 @@ const Dashboard = (props) => {
       <div className="welcome-message">
         <h1 className="welcome">
           Hey,&nbsp;
-          <span style={{ color: "#6748d6" }}>{props.username}</span> 😁
+          <span style={{ color: "#6748d6" }}>{props.username}</span> 
         </h1>
         <p className="overview">Here's your overview</p>
       </div>
@@ -199,6 +199,11 @@ const Transactions = (props) => {
     //   }
     // };
     try {
+      console.log("Deleting transaction:", id);
+      if (!id) {
+        console.error("Error: transaction ID is undefined!");
+        return;
+      }
       const response = await fetch(`${proxy}/api/transactions/${id}`, {
         method: "DELETE",
       });

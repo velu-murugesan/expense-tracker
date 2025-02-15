@@ -48,7 +48,7 @@ const Login = () => {
         <>
           <form onSubmit={handleLogin} className="signup-page">
             <div className="head">
-              <h1>Fin-Z</h1>
+              <h1>Expense Tracker</h1>
               <p>Track smarter, spend wiser, live better.</p>
             </div>
 

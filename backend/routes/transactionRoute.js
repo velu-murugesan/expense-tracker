@@ -10,7 +10,10 @@ router.post("/:userId", async (req, res) => {
   try {
     const { amount, date, type, description, category, title } = req.body;
     const userId = req.params.userId;
-
+    console.log("Received userId:", userId);
+    if (!userId || userId === "null") {
+      return res.status(400).json({ message: "Invalid userId" });
+    }
     const transaction = new Transaction({
       amount,
 

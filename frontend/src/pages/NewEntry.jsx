@@ -7,6 +7,8 @@ import { proxy } from "../../utils/proxy";
 import { useState, useEffect } from "react";
 import { set } from "mongoose";
 const NewEntry = ({ userId }) => {
+  console.log("UserId in NewEntry:", userId);
+
   const [selectedNumber, setSelectedNumber] = useState(1);
   const [text, setText] = useState("");
   // const [customCategory, setCustomCategory] = useState("");
@@ -51,14 +53,21 @@ const NewEntry = ({ userId }) => {
     "Entertainment",
     "Clothing",
     "Tuition Fees",
-    "Personal Care",
+    "Hospital",
+    "Rent",
+    "Bills",
     "Miscellaneous",
   ];
   const incomeCategories = [
-    "Pocket money",
+    "Pocket Money",
+    "Salary",
+    "Freelancing",
+    "Investment",
+    "Gift",
     "Scholarships",
     "Internship/Stipend",
     "Part-time",
+    "Others",
   ];
   const handleNavbarSelectedItem = (number) => {
     setSelectedNumber(number);
@@ -109,6 +118,10 @@ const NewEntry = ({ userId }) => {
   };
   const handleSubmit = async (e) => {
     e.preventDefault();
+    if (!userId) {
+      console.error("Error: userId is null or undefined");
+      return;
+    }
     try {
       const response = await fetch(
         `${proxy}/api/transactions/${userId}`,

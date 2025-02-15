@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import "../styles/Sidebar.css";
 import logo from "../assets/MAIN-LOGO.png";
+import expense from "../assets/expense.png";
 import { SiZcash } from "react-icons/si";
 import calendar from "../assets/CALENDAR-LIST.png";
 import pen from "../assets/NEW-ENTRY-LIST.png";
@@ -35,9 +36,9 @@ const Sidebar = () => {
     <div>
       <div id="sidebar">
         <div className="page-title">
-          {/* <img src={logo} width={50} className="page-logo" /> */}
-          <SiZcash className="main-logo-w" />
-          <p>Fin-Z</p>
+          <img src={expense} width={50} className="page-logo" />
+          {/* <SiZcash className="main-logo-w" /> */}
+          <p>ExpenseTracker</p>
         </div>
 
         <ul>

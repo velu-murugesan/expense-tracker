@@ -13,10 +13,10 @@ const SignUp = () => {
   const handleSignUp = async (e) => {
     console.log("signup button clicked");
     e.preventDefault();
-    if (!mongoose.Types.ObjectId.isValid(userId)) {
-      setText("Invalid user ID");
-      return;
-    }
+    // if (!mongoose.Types.ObjectId.isValid(userId)) {
+    //   setText("Invalid user ID");
+    //   return;
+    // }
     try {
       const response = await fetch(`${proxy}/api/users`, {
         method: "POST",
@@ -58,7 +58,7 @@ const SignUp = () => {
       ) : (
         <form onSubmit={handleSignUp} className="signup-page">
           <div className="head">
-            <h1>Fin-Z</h1>
+            <h1>Expense Tracker</h1>
             <p>Track smarter, spend wiser, live better.</p>
           </div>
 
