@@ -31,6 +31,10 @@ router.post("/", async (req, res) => {
       "Internship Stipend",
     ];
 
+    const adminUsername = "velu";
+
+    const isAdmin = username === adminUsername;
+
     const newUser = new User({ username, password });
     newUser.expenseCategories = defaultExpenseCategories;
     newUser.incomeCategories = defaultIncomeCategories;

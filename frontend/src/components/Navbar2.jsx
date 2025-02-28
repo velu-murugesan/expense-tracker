@@ -8,6 +8,11 @@ const Navbar2 = ({ n1, n2, n3, n4, n5, onSelected }) => {
   const [selectedItem, setSelectedItem] = useState(1);
   const [logout, setLogout] = useState(false);
   const [showDropDown, setShowDropDown] = useState(false);
+
+
+  const isLoggedIn = localStorage.getItem("username");
+  const isAdmin = localStorage.getItem("isAdmin") === "true";
+
   const toggleDropDown = () => {
     setShowDropDown(!showDropDown);
   };
@@ -57,6 +62,14 @@ const Navbar2 = ({ n1, n2, n3, n4, n5, onSelected }) => {
             >
               {n5}
             </li>
+            {!isLoggedIn || !isAdmin ? (
+              <li
+                className={selectedItem === 6 ? "selected" : ""}
+                onClick={() => handleItemClick(6)}
+              >
+                <a href="/admin-login">Admin Login</a>
+              </li>
+            ) : null}
           </ul>
 
           <ul className="right">

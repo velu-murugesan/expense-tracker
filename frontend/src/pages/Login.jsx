@@ -1,14 +1,16 @@
-import React from "react";
-import { useState } from "react";
-import { Link, Navigate } from "react-router-dom";
+import React, { useState } from "react";
+import { Link, Navigate, useNavigate } from "react-router-dom";
 import { FaUser, FaLock } from "react-icons/fa";
 import { proxy } from "../../utils/proxy";
 import "../styles/Signup.css";
+
 const Login = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [text, setText] = useState("");
   const [loginSuccess, setLoginSuccess] = useState(false);
+  const navigate = useNavigate();
+
   const handleLogin = async (e) => {
     e.preventDefault();
     try {
@@ -26,19 +28,14 @@ const Login = () => {
         localStorage.setItem("username", data.username);
         setLoginSuccess(true);
       } else {
-        setText(data.message || "Login failed , Invalid username or password");
+        setText(data.message || "Login failed, Invalid username or password");
       }
     } catch (error) {
-      console.error("error checking username/password:", error);
+      console.error("Error checking username/password:", error);
     }
   };
-  const handleUsernameChange = (e) => {
-    setUsername(e.target.value);
-  };
 
-  const handlePasswordChange = (e) => {
-    setPassword(e.target.value);
-  };
+
 
   return (
     <div className="wrapper">
@@ -58,8 +55,8 @@ const Login = () => {
                 type="text"
                 placeholder="Username"
                 value={username}
-                onChange={handleUsernameChange}
-              ></input>
+                onChange={(e) => setUsername(e.target.value)}
+              />
               <FaUser className="icon" />
             </div>
             <div className="input-box">
@@ -67,14 +64,15 @@ const Login = () => {
                 type="password"
                 placeholder="Password"
                 value={password}
-                onChange={handlePasswordChange}
-              ></input>
+                onChange={(e) => setPassword(e.target.value)}
+              />
               <FaLock className="icon" />
             </div>
             <div className="button">
               <button type="submit">Login</button>
             </div>
 
+          
             <div className="login-link">
               <p>
                 Don't have an account? <Link to="/">Signup</Link> now!

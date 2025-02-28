@@ -348,3 +348,23 @@ h2{
   color: #f8fbfd;
   font-size: 2rem;
 }
+
+.critical-expense-warning {
+  background-color: #ffcccc;
+  color: #cc0000;
+  padding: 10px;
+  border: 1px solid #cc0000;
+  border-radius: 5px;
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+.expense-exceed-warning {
+  background-color: #ff9999;
+  color: #990000;
+  padding: 10px;
+  border: 1px solid #990000;
+  border-radius: 5px;
+  margin-bottom: 20px;
+  text-align: center;
+}

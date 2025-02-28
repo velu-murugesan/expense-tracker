@@ -6,7 +6,7 @@ import { proxy } from "../../utils/proxy";
 
 import { useState, useEffect } from "react";
 import { set } from "mongoose";
-const NewEntry = ({ userId }) => {
+const NewEntry = ({ userId , handleUpdate}) => {
   console.log("UserId in NewEntry:", userId);
 
   const [selectedNumber, setSelectedNumber] = useState(1);
@@ -137,6 +137,7 @@ const NewEntry = ({ userId }) => {
       if (response.ok) {
         setText("Transaction added successfully");
         console.log("transaction added successfully");
+        handleUpdate(); 
         setFormData({
           title: "",
           description: "",

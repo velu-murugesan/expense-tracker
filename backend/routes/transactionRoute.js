@@ -67,4 +67,54 @@ router.delete("/:transactionId", async (req, res) => {
     res.status(500).json({ message: "Internal server error" });
   }
 });
+
+
+// UPDATE a specific transaction by ID
+router.put("/:transactionId", async (req, res) => {
+  try {
+    const { transactionId } = req.params;
+    const { amount, date, type, description, category, title } = req.body;
+
+    const updatedTransaction = await Transaction.findByIdAndUpdate(
+      transactionId,
+      { amount, date, type, description, category, title },
+      { new: true } // Return the updated document
+    );
+
+    if (!updatedTransaction) {
+      return res.status(404).json({ message: "Transaction not found" });
+    }
+
+    res.json(updatedTransaction);
+  } catch (error) {
+    console.error("Error updating transaction:", error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+});
+
+router.get("/monthly/:userId", async (req, res) => {
+  try {
+      const { userId } = req.params;
+
+      const today = new Date();
+      const firstDay = new Date(today.getFullYear(), today.getMonth(), 1);
+      const lastDay = new Date(today.getFullYear(), today.getMonth() + 1, 0);
+
+      const transactions = await Transaction.find({
+          user: userId,  // Make sure 'user' field stores ObjectId
+          date: { $gte: firstDay, $lte: lastDay },
+      });
+
+      res.json(transactions);
+  } catch (error) {
+      res.status(500).json({ error: "Server error" });
+  }
+});
+
+
+
 module.exports = router;
+
+
+
+

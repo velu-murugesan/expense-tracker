@@ -5,6 +5,7 @@ const transactionRoute = require("./routes/transactionRoute.js");
 const express = require("express");
 const PORT = 4000;
 
+
 const app = express();
 app.use(express.json());
 
@@ -12,7 +13,7 @@ app.use(express.json());
 
 const corsOptions = {
   origin: ["https://fin-z-app.vercel.app", "http://localhost:5173"],
-  allowedHeaders: ["Content-Type", "Authorization", "X-Requested-With"],
+  allowedHeaders: ["Content-Type", "Authorization", "X-Requested-With","x-is-admin"],
   methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
   credentials: true,
 };
@@ -24,7 +25,7 @@ app.options("*", (req, res) => {
   res.header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, PATCH, OPTIONS");
   res.header("Access-Control-Allow-Headers", "Content-Type, Authorization, X-Requested-With");
   res.header("Access-Control-Allow-Credentials", "true");
-  res.sendStatus(204); // No Content
+  res.sendStatus(204); 
 });
 
 mongoose
@@ -36,7 +37,7 @@ mongoose
 
 app.use("/api/users", userRoute);
 app.use("/api/transactions", transactionRoute);
-// app.use("/api/home", homeRoute);
+
 
 
 app.get("/", (req, res) => {

@@ -15,7 +15,29 @@ function App() {
   const userId = localStorage.getItem("userId");
   console.log(userId);
   const [transactions, setTransactions] = useState([]);
+
+
+
+  const fetchTransactions = async () => {
+    try {
+      const response = await fetch(`${proxy}/api/transactions/${userId}`);
+      const data = await response.json();
+      if (response.ok) {
+        setTransactions(data); // Update state with latest transactions
+      } else {
+        console.error("Failed to fetch transactions");
+      }
+    } catch (error) {
+      console.error("Error fetching transactions:", error);
+    }
+  };
+
+ 
   useEffect(() => {
+    if (!userId) {
+      return;
+    }
+    fetchTransactions();
     try {
       fetch(`${proxy}/api/transactions/${userId}`, {
         method: "GET",
@@ -41,14 +63,14 @@ function App() {
     <>
       <BrowserRouter>
         <Routes>
-          <Route path="/home" element={<Home transactions={transactions} />} />
+          <Route path="/home" element={<Home transactions={transactions} handleUpdate={fetchTransactions}/>} />
           {/* <Route path="/year" element={<Year />} />
           <Route path="/daily" element={<Daily />} /> */}
           <Route
             path="/month"
             element={<Month transactions={transactions} />}
           />
-          <Route path="/new-entry" element={<NewEntry userId={userId} />} />
+          <Route path="/new-entry" element={<NewEntry userId={userId} handleUpdate={fetchTransactions}/>} />
           {/* <Route path="/week" element={<Week />} /> */}
           <Route path="/" element={<SignUp />} />
           <Route

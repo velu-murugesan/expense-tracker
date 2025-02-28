@@ -23,6 +23,8 @@ import { FaCircle, FaBalanceScaleLeft } from "react-icons/fa";
 import { BiSolidUpArrowCircle, BiSolidDownArrowCircle } from "react-icons/bi";
 import { TbCashBanknoteOff } from "react-icons/tb";
 import { MdDelete } from "react-icons/md";
+import DownloadPDFButton from "../components/DownloadPDFButton.jsx";
+
 
 const Recents = (props) => {
   const transactions = props.transactions;
@@ -141,6 +143,19 @@ const Dashboard = (props) => {
         <p className="overview">Here's your overview</p>
       </div>
 
+
+      {props.isExpenseExceedIncome ? (
+        <div className="expense-exceed-warning">
+          <p>Warning: Your expenses have exceeded your income!</p>
+        </div>
+      ) : (
+        props.isCriticalExpenseLevel && (
+          <div className="critical-expense-warning">
+            <p>Warning: Your expenses have exceeded 80% of your income!</p>
+          </div>
+        )
+      )}
+
       <div className="graph">
         {/* <img src={graph} className="graph-img" width={750} /> */}
 
@@ -166,6 +181,7 @@ const Dashboard = (props) => {
           <Tcard />
         </div>
       </div> */}
+        <DownloadPDFButton />
     </div>
   );
 };
@@ -176,11 +192,20 @@ const Transactions = (props) => {
   const transactions_array = props.transactions.slice().reverse();
   const [selectedTransaction, setSelectedTransaction] = useState(null);
   const [transactions, setTransactions] = useState(props.transactions);
+  
+
 
   const handleRowClick = (transactionId) => {
     setSelectedTransaction(transactionId);
   };
   const handleDelete = async (id) => {
+
+    if (!id) {
+      console.error("Transaction ID is missing!");
+      return;
+    }
+  
+  
     console.log("delete");
     // const handleDelete = async (transactionId) => {
     //   try {
@@ -210,10 +235,11 @@ const Transactions = (props) => {
 
       if (response.ok) {
         console.log("Transaction deleted successfully");
-        const updatedTransactions = transactions.filter(
-          (transaction) => transaction._id !== id
+        setTransactions((prevTransactions) =>
+          prevTransactions.filter((txn) => txn._id !== id)
         );
-        setTransactions(updatedTransactions);
+        props.handleUpdate();
+
       } else {
         console.error("Failed to delete transaction");
       }
@@ -240,6 +266,7 @@ const Transactions = (props) => {
             </div> */}
           {transactions_array.map((transaction) => {
             return (
+              
               <div
                 className="table-row"
                 key={transaction._id}
@@ -267,9 +294,11 @@ const Transactions = (props) => {
                 </div>
                 <div className="table-cell last">{transaction.category}</div>
                 <div className="delete">
-                  <MdDelete onClick={() => handleDelete(transaction._id)} />
+                  <MdDelete onClick={() => handleDelete(transaction._id)}  />
                 </div>
               </div>
+            
+      
             );
           })}
 
@@ -440,12 +469,29 @@ const Home = (props) => {
   //   }
   // }, []);
   const transactions = props.transactions;
+  const fetchTransactions = props.handleUpdate;
+
+
+
   useEffect(() => {
     const storedUsername = localStorage.getItem("username");
     if (storedUsername) {
       setUsername(storedUsername);
     }
+
   }, []);
+
+
+  const totalIncome = transactions
+    .filter((transaction) => transaction.type === "income")
+    .reduce((acc, transaction) => acc + transaction.amount, 0);
+
+  const totalExpense = transactions
+    .filter((transaction) => transaction.type === "expense")
+    .reduce((acc, transaction) => acc + transaction.amount, 0);
+
+  const isCriticalExpenseLevel = totalExpense > 0.8 * totalIncome;
+  const isExpenseExceedIncome = totalExpense > totalIncome;
 
   //Navbar code
   const [selectedNumber, setSelectedNumber] = useState(1);
@@ -482,6 +528,9 @@ const Home = (props) => {
   // const incomeWeek = [];
   // const incomeDay = [];
 
+
+
+
   return (
     <>
       {localStorage.getItem("username") ? (
@@ -504,6 +553,8 @@ const Home = (props) => {
                     <Dashboard
                       username={username}
                       transactions={transactions}
+                      isCriticalExpenseLevel={isCriticalExpenseLevel}
+                      isExpenseExceedIncome={isExpenseExceedIncome}
                     />
                     <Recents
                       transactions={transactions}
@@ -511,7 +562,8 @@ const Home = (props) => {
                     />
                   </>
                 ) : selectedNumber == 2 ? (
-                  <Transactions transactions={transactions} />
+                  <Transactions transactions={transactions} handleUpdate={fetchTransactions}/>
+                
                 ) : (
                   <>
                     <Totals transactions={transactions} />
