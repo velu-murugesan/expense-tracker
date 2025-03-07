@@ -38,6 +38,28 @@ router.post("/:userId", async (req, res) => {
   }
 });
 
+
+
+router.put("/:id", async (req, res) => {
+  try {
+    const { title, amount, category, date } = req.body;
+    const updatedTransaction = await Transaction.findByIdAndUpdate(
+      req.params.id,
+      { title, amount, category, date },
+      { new: true }
+    );
+
+    if (!updatedTransaction) {
+      return res.status(404).json({ message: "Transaction not found" });
+    }
+
+    res.json(updatedTransaction);
+  } catch (error) {
+    console.error("Error updating transaction:", error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+});
+
 // GET all transactions for a specific user
 router.get("/:userId", async (req, res) => {
   try {

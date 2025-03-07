@@ -34,6 +34,7 @@ const SignUp = () => {
         localStorage.setItem("userId", data.userId);
         localStorage.setItem("username", data.username);
         setSignupSuccess(true);
+        window.location.reload();
       } else {
         // alert(data.message || "Signup failed");
         setText(data.message || "Signup failed");

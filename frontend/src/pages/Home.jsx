@@ -23,6 +23,7 @@ import { FaCircle, FaBalanceScaleLeft } from "react-icons/fa";
 import { BiSolidUpArrowCircle, BiSolidDownArrowCircle } from "react-icons/bi";
 import { TbCashBanknoteOff } from "react-icons/tb";
 import { MdDelete } from "react-icons/md";
+import { FaEdit } from "react-icons/fa";
 import DownloadPDFButton from "../components/DownloadPDFButton.jsx";
 
 
@@ -192,6 +193,7 @@ const Transactions = (props) => {
   const transactions_array = props.transactions.slice().reverse();
   const [selectedTransaction, setSelectedTransaction] = useState(null);
   const [transactions, setTransactions] = useState(props.transactions);
+  const [editData, setEditData] = useState(null);
   
 
 
@@ -247,6 +249,41 @@ const Transactions = (props) => {
       console.error("Error deleting transaction:", error);
     }
   };
+
+  const handleEditClick = (transaction) => {
+    setEditData(transaction);
+  };
+
+  const handleUpdate = async () => {
+    if (!editData || !editData._id) return;
+
+    try {
+      const response = await fetch(`${proxy}/api/transactions/${editData._id}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(editData),
+      });
+
+      if (response.ok) {
+        console.log("Transaction updated successfully");
+        setTransactions((prev) =>
+          prev.map((txn) => (txn._id === editData._id ? editData : txn))
+        );
+        setEditData(null);
+        props.handleUpdate();
+      } else {
+        console.error("Failed to update transaction");
+      }
+    } catch (error) {
+      console.error("Error updating transaction:", error);
+    }
+  };
+
+
+
+
   return (
     <div>
       <div>
@@ -293,9 +330,18 @@ const Transactions = (props) => {
                     .join("-")}
                 </div>
                 <div className="table-cell last">{transaction.category}</div>
+
+                <div className="edit">
+                <FaEdit onClick={() => handleEditClick(transaction)} />
+                </div>
+
                 <div className="delete">
+                
                   <MdDelete onClick={() => handleDelete(transaction._id)}  />
                 </div>
+
+              
+              
               </div>
             
       
@@ -317,6 +363,28 @@ const Transactions = (props) => {
           {/* Mapping the recentArray as table rows */}
         </div>
       </div>
+      {editData && (
+        <div className="modal">
+          <h3>Edit Transaction</h3>
+          <input
+            type="text"
+            value={editData.title}
+            onChange={(e) => setEditData({ ...editData, title: e.target.value })}
+          />
+          <input
+            type="number"
+            value={editData.amount}
+            onChange={(e) => setEditData({ ...editData, amount: e.target.value })}
+          />
+          <input
+            type="text"
+            value={editData.category}
+            onChange={(e) => setEditData({ ...editData, category: e.target.value })}
+          />
+          <button onClick={handleUpdate}>Save</button>
+          <button onClick={() => setEditData(null)}>Cancel</button>
+        </div>
+      )}
     </div>
   );
 };

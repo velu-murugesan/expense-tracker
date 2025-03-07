@@ -38,7 +38,7 @@ const Sidebar = () => {
         <div className="page-title">
           <img src={expense} width={50} className="page-logo" />
           {/* <SiZcash className="main-logo-w" /> */}
-          <p>ExpenseTracker</p>
+          
         </div>
 
         <ul>

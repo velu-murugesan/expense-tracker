@@ -8,7 +8,8 @@ const transactionSchema = new Schema({
   category: { type: String },
   user: { type: Schema.Types.ObjectId, ref: "User",required: true },
   title: { type: String },
-});
+  receipt: { type: String },
+}, { timestamps: true });
 
 const Transaction = mongoose.model("Transaction", transactionSchema);
 module.exports = { Transaction };
