@@ -4,6 +4,7 @@ const userRoute = require("./routes/userRoute.js");
 const transactionRoute = require("./routes/transactionRoute.js");
 const express = require("express");
 const PORT = 4000;
+const salaryRoute = require("./routes/salaryRoute.js");
 
 
 const app = express();
@@ -37,7 +38,7 @@ mongoose
 
 app.use("/api/users", userRoute);
 app.use("/api/transactions", transactionRoute);
-
+app.use("/api/salaries",salaryRoute);
 
 
 app.get("/", (req, res) => {

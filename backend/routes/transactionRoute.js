@@ -40,6 +40,11 @@ router.post("/:userId", async (req, res) => {
 
 
 
+
+
+
+
+
 router.put("/:id", async (req, res) => {
   try {
     const { title, amount, category, date } = req.body;
@@ -130,6 +135,35 @@ router.get("/monthly/:userId", async (req, res) => {
       res.json(transactions);
   } catch (error) {
       res.status(500).json({ error: "Server error" });
+  }
+});
+
+router.get("/:userId/used-income-categories", async (req, res) => {
+  try {
+    const { userId } = req.params;
+    const transactions = await Transaction.find({ userId, type: "income" }).distinct("category");
+    res.json(transactions);
+  } catch (error) {
+    res.status(500).json({ message: "Error fetching income categories", error });
+  }
+});
+
+
+router.post("/add", async (req, res) => {
+  try {
+    const { userId, amount, category, type, date } = req.body;
+
+    if (!userId || !mongoose.Types.ObjectId.isValid(userId)) {
+      return res.status(400).json({ message: "Invalid userId" });
+    }
+
+    const newTransaction = new Transaction({ user: userId, amount, category, type, date });
+    await newTransaction.save();
+    res.json({ message: "Transaction added successfully!" });
+
+  } catch (error) {
+    console.error("Error adding transaction:", error);
+    res.status(500).json({ message: "Error adding transaction", error });
   }
 });
 

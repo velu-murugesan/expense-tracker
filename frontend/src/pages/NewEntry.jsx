@@ -3,6 +3,7 @@ import Navbar2 from "../components/Navbar2.jsx";
 import Sidebar from "../components/Sidebar.jsx";
 import "../styles/NewEntry.css";
 import { proxy } from "../../utils/proxy";
+import SalaryInput from "./SalaryInput.jsx";
 
 const NewEntry = ({ userId, handleUpdate }) => {
   console.log("UserId in NewEntry:", userId);
@@ -19,6 +20,10 @@ const NewEntry = ({ userId, handleUpdate }) => {
   });
   const [receipt, setReceipt] = useState(null);
 
+  // Define Salary Range (Customize as needed)
+  const minSalary = 5000;  // Minimum salary allowed
+  const maxSalary = 100000; // Maximum salary allowed
+
   const expenseCategories = [
     "Education", "Food", "Transportation", "Entertainment", "Clothing",
     "Tuition Fees", "Hospital", "Rent", "Bills", "Miscellaneous",
@@ -30,11 +35,25 @@ const NewEntry = ({ userId, handleUpdate }) => {
 
   const handleInputChange = (e) => {
     const { id, value } = e.target;
+
+    // Enforce salary limits only if 'income' is selected
+    if (id === "amount" && formData.type === "income") {
+      const salary = Number(value);
+      if (salary < minSalary || salary > maxSalary) {
+        setText(`Salary must be between ${minSalary} and ${maxSalary}`);
+      } else {
+        setText(""); // Clear error if within range
+      }
+    }
+
     setFormData({ ...formData, [id]: value });
   };
 
   const handleRadioChange = (e) => {
     setFormData({ ...formData, type: e.target.value });
+
+    // Reset error message when switching between income and expense
+    setText("");
   };
 
   const handleCategoryChange = (e) => {
@@ -47,17 +66,22 @@ const NewEntry = ({ userId, handleUpdate }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-  
-    // Debugging: Log formData before sending
-    console.log("Form Data before sending:", formData);
-  
+
     // Ensure all required fields are present
     if (!formData.amount || !formData.date || !formData.type) {
-      console.error("Error: Missing required fields");
       setText("Error: Please fill all required fields");
       return;
     }
-  
+
+    // Validate salary range for income
+    if (formData.type === "income") {
+      const salary = Number(formData.amount);
+      if (salary < minSalary || salary > maxSalary) {
+        setText(`Salary must be between ${minSalary} and ${maxSalary}`);
+        return;
+      }
+    }
+
     try {
       const response = await fetch(`${proxy}/api/transactions/${userId}`, {
         method: "POST",
@@ -66,36 +90,31 @@ const NewEntry = ({ userId, handleUpdate }) => {
         },
         body: JSON.stringify(formData),
       });
-  
+
       const data = await response.json();
-  
+
       if (response.ok) {
         setText("Transaction added successfully");
-        console.log("Transaction added successfully");
-  
+
         // Call function to refresh transactions
         handleUpdate();
-  
+
         // Reset form fields
         setFormData({
           title: "",
           description: "",
-          date: "",  
+          date: "",
           type: "income", // Default value
           category: "other",
           amount: "",
         });
       } else {
         setText(data.message || "Transaction add failed");
-        console.log("Transaction add failed:", data);
       }
     } catch (error) {
-      console.error("Error:", error);
       setText("Error: Failed to connect to server");
     }
   };
-  
-  
 
   return (
     <div className="container-1">
@@ -104,7 +123,9 @@ const NewEntry = ({ userId, handleUpdate }) => {
       </div>
       <div className="content">
         <Navbar2 n1="New-Entry" onSelected={setSelectedNumber} className="navbar-settings" />
+     
         <div className="new-entry-form">
+        <SalaryInput userId={userId} />
           <div className="form-wrapper">
             <form onSubmit={handleSubmit} className="form-2">
               <div className="our-form">
@@ -148,11 +169,17 @@ const NewEntry = ({ userId, handleUpdate }) => {
                   </div>
                   <div className="form-group">
                     <label htmlFor="amount">Amount</label>
-                    <input type="number" id="amount" value={formData.amount} onChange={handleInputChange} />
-                  </div>
-                  <div className="form-group">
-                    <label htmlFor="receipt">Attach Receipt</label>
-                    <input type="file" id="receipt" accept="image/*, application/pdf" onChange={handleFileChange} />
+                    <input
+                      type="number"
+                      id="amount"
+                      value={formData.amount}
+                      onChange={handleInputChange}
+                      min={formData.type === "income" ? minSalary : undefined}
+                      max={formData.type === "income" ? maxSalary : undefined}
+                    />
+                    {formData.type === "income" && (
+                      <small>Allowed range: {minSalary} - {maxSalary}</small>
+                    )}
                   </div>
                 </div>
               </div>

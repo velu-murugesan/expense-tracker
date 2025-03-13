@@ -7,7 +7,7 @@ const userSchema = new Schema({
   transactions: [{ type: Schema.Types.ObjectId, ref: "Transaction" }],
   expenseCategories: [{ type: String }],
   incomeCategories: [{ type: String }],
-  isAdmin: { type: Boolean, default: false } ,
+  basicSalary: { type: Number, default: null },
 });
 
 const User = mongoose.model("User", userSchema);

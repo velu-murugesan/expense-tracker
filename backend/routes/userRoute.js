@@ -7,6 +7,9 @@ router.get("/", async (req, res) => {
   res.send("Hello from users!");
 });
 
+
+
+
 // post a new user
 router.post("/", async (req, res) => {
   try {
@@ -30,6 +33,31 @@ router.post("/", async (req, res) => {
       "Pocket money",
       "Internship Stipend",
     ];
+
+
+
+
+// Set Basic Salary (Only once)
+router.post("/set-salary/:id", async (req, res) => {
+  try {
+    const user = await User.findById(req.params.id);
+
+    if (!user) return res.status(404).json({ message: "User not found" });
+    if (user.basicSalary !== null) {
+      return res.status(400).json({ message: "Basic Salary already set!" });
+    }
+
+    user.basicSalary = req.body.basicSalary;
+    await user.save();
+
+    res.json({ message: "Basic Salary set successfully!", basicSalary: user.basicSalary });
+  } catch (error) {
+    res.status(500).json({ message: "Server Error", error });
+  }
+});
+
+
+
 
     const adminUsername = "velu";
 
