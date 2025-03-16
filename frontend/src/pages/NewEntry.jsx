@@ -17,12 +17,13 @@ const NewEntry = ({ userId, handleUpdate }) => {
     type: "income",
     category: "",
     amount: "",
+    formData:""
   });
   const [receipt, setReceipt] = useState(null);
 
   // Define Salary Range (Customize as needed)
-  const minSalary = 5000;  // Minimum salary allowed
-  const maxSalary = 100000; // Maximum salary allowed
+  const minSalary = 8000;  // Minimum salary allowed
+  const maxSalary = 400000; // Maximum salary allowed
 
   const expenseCategories = [
     "Education", "Food", "Transportation", "Entertainment", "Clothing",
@@ -125,7 +126,7 @@ const NewEntry = ({ userId, handleUpdate }) => {
         <Navbar2 n1="New-Entry" onSelected={setSelectedNumber} className="navbar-settings" />
      
         <div className="new-entry-form">
-        <SalaryInput userId={userId} />
+        {/* <SalaryInput userId={userId} /> */}
           <div className="form-wrapper">
             <form onSubmit={handleSubmit} className="form-2">
               <div className="our-form">

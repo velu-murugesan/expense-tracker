@@ -4,7 +4,7 @@ const userRoute = require("./routes/userRoute.js");
 const transactionRoute = require("./routes/transactionRoute.js");
 const express = require("express");
 const PORT = 4000;
-const salaryRoute = require("./routes/salaryRoute.js");
+
 
 
 const app = express();
@@ -31,14 +31,14 @@ app.options("*", (req, res) => {
 
 mongoose
   .connect(
-    "mongodb+srv://velu2092002:HXdXw3ULnE410Oen@cluster0.up2go.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0"
+    "mongodb+srv://velu2092002:HXdXw3ULnE410Oen@cluster0.up2go.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0",
   )
   .then(() => console.log("Connected to MongoDB2"))
   .catch((err) => console.log(err));
 
 app.use("/api/users", userRoute);
 app.use("/api/transactions", transactionRoute);
-app.use("/api/salaries",salaryRoute);
+
 
 
 app.get("/", (req, res) => {
